@@ -24,6 +24,14 @@ const BlogslistView = () => {
         return unsubscribe;
     }, []);
 
+    const DeleteBlog = (id) => {
+        Blogslist.doc(id).delete().then(() => {
+            alert("Document successfully deleted!");
+        }).catch((error) => {
+            console.log("Error removing document: ", error);
+        });
+    }
+
     return (
         <div>
             {blogs.map(blog => (
@@ -31,6 +39,8 @@ const BlogslistView = () => {
                     <h2>Title : {blog.Title}</h2>
                     <p>Body : {blog.Body}</p>
                     <Link to={"/show/" + blog.id}>View</Link>
+                    <Link to={"/EditBlog/" + blog.id}>Edit</Link>
+                    <button onClick={() => { DeleteBlog(blog.id) }}>delete</button>
                 </div>
             ))}
         </div>
