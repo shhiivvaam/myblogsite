@@ -16,7 +16,6 @@ export default function useAuthState(auth) {
                 setinitializing(false);
             }
         });
-
         return subscribe;
     }, [auth, initializing]);
 

@@ -1,19 +1,20 @@
-import fb from "./firebase";
-import useAuthState from "./hooks";
+import fb from "../database/firebase";
+import useAuthState from "../hooks/hooks";
+
+import { toast } from 'react-hot-toast';
 
 export default function Signin() {
 
     const { user, initializing } = useAuthState(fb.auth());
-
     const signinwithGoogle = async () => {
         const provider = new fb.auth.GoogleAuthProvider();
         fb.auth().useDeviceLanguage();
-
         try {
-            // we have not ued here -> ( signInWithPopUp ) because is sometimes misbehaves while using in mobile applications
             await fb.auth().signInWithRedirect(provider);
+            toast.success("Logged in Succcessfully 👍");
         } catch (error) {
             console.log('Something occured while SignInWithGoogle : ', error.message);
+            toast.error("Something went wrong!! 👀")
         }
     };
 
@@ -33,7 +34,7 @@ export default function Signin() {
                     <button
                         className="border-2 border-black"
                         onClick={signinwithGoogle}>
-                        Sign in with Google
+                        Sign In With GOOGLE
                     </button>
                 </div>
             }

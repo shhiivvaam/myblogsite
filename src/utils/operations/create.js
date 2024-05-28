@@ -1,23 +1,19 @@
 import React, { useState } from 'react';
+import { useNavigate } from "react-router-dom";
+import { Editor } from '@tinymce/tinymce-react';
+import { toast } from 'react-hot-toast';
 
-// tinymce editor
-// import { Editor } from '@tinymce/tinymce-react';
-
-import fb from './firebase'
-import useAuthState from './hooks';
-
+import fb from '../../database/firebase'
+import useAuthState from '../../hooks/hooks';
 const DB = fb.firestore();
-const Blogslist = DB.collection('blogs');
-
-// firebase storage
 const storageRef = fb.storage().ref();
-
+const Blogslist = DB.collection('blogs');
 
 
 const CreateBlog = () => {
 
     const { user, initializing } = useAuthState(fb.auth());
-
+    const navigate = useNavigate();
     const [title, SetTitle] = useState("");
     const [body, SetBody] = useState("");
     const [cover, SetCover] = useState(null);
@@ -30,7 +26,9 @@ const CreateBlog = () => {
 
     const submit = (e) => {
         e.preventDefault();
-
+        toast('Please wait!', {
+            icon: '🙏😶‍🌫️',
+        });
         const uploadtask = storageRef.child('images/' + cover.name).put(cover);
         uploadtask.on(
             'state_changed',
@@ -47,14 +45,16 @@ const CreateBlog = () => {
                         Title: title,
                         Body: body,
                         CoverImg: url,
-                        // this can create -> error (fix it)
                         author: user.uid,
                     })
                         .then((docRef) => {
-                            alert("Blog Added Successfully.");
+                            // alert("Blog Added Successfully.");
+                            toast.success("Blog Added Successfully 😎✅")
+                            navigate("/blogs");
                         })
                         .catch((error) => {
                             console.log('Error while creating the Blog', error);
+                            toast.error("Error while creating the Blog ❌")
                         });
                 })
             }
@@ -72,17 +72,17 @@ const CreateBlog = () => {
                 {/* input for image -> cover */}
                 <input type='file' name='coverimg' accept='image/*' onChange={(e) => handleCoverImgChange(e)} />
 
-                <textarea name="content" type="text" placeholder="write your content here"
+                {/* <textarea name="content" type="text" placeholder="write your content here"
                     rows="10" cols="150" onChange={(e) => { SetBody(e.target.value) }} required >
-                </textarea>
+                </textarea> */}
 
-                {/* <Editor
+                <Editor
                     textareaName='content'
                     initialValue='write your content here'
                     onEditorChange={(newText) => { SetBody(newText) }}
                     required
                     apiKey='3lw2lgintfata5t8twmzvfp2fy1ln1odn4ueweqhg5xqhhog'
-                /> */}
+                />
 
                 <button type="submit">Submit</button>
             </form>

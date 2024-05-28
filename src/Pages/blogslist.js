@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-// need to apply this markdown later
-// import ReactMarkdown from 'react-markdown';
 
-import fb from './firebase'
+import fb from '../database/firebase'
+import { toast } from 'react-hot-toast';
 const DB = fb.firestore();
 const Blogslist = DB.collection('blogs');
 
@@ -22,16 +21,19 @@ const BlogslistView = () => {
             // Update state
             Setblogs(data);
         });
-
-        // Detach listener
         return unsubscribe;
     }, []);
 
     const DeleteBlog = (id) => {
+        toast('Please wait!', {
+            icon: '🙏😶‍🌫️',
+        });
         Blogslist.doc(id).delete().then(() => {
-            alert("Document successfully deleted!");
+            // alert("Document successfully deleted!");
+            toast.success("Blog Removed 💀");
         }).catch((error) => {
             console.log("Error removing document: ", error);
+            toast.error("Something went wrong!! 👀")
         });
     }
 
@@ -44,13 +46,13 @@ const BlogslistView = () => {
         ));
     }
 
-    // const body = blogs.Body;
+    const body = blogs.Body;
     return (
         <div>
             {/* Sign in With Gogle Link */}
-            <div>
+            {/* <div>
                 <Link to={"/signin"} >Signin</Link>
-            </div>
+            </div> */}
             <form onSubmit={(e) => { SearchBlog(e) }}>
                 <input onChange={(e) => { SetSearch(e.target.value) }} />
                 <button type='submit'> Search </button>
@@ -58,9 +60,8 @@ const BlogslistView = () => {
             {blogs.map(blog => (
                 <div key={blog.id}>
                     <h2>Title : {blog.Title}</h2>
-                    <p>Body : {blog.Body}</p>
-                    {/* react markdown step */}
-                    {/* <ReactMarkdown>{post.content}</ReactMarkdown> */}
+                    {/* <p>Body : {blog.Body}</p> */}
+                    <div dangerouslySetInnerHTML={{ __html: body }}></div>
                     {
                         blog.CoverImg
                             ?
@@ -71,8 +72,6 @@ const BlogslistView = () => {
                             null
                     }
 
-                    {/* below configurations are for the { tinymce -> Editor}   -> to make the fit with the added styling, and do not show the actual HTML tags*/}
-                    {/* <div dangerouslySetInnerHTML={{ __html: body }}></div> */}
 
                     <Link to={"/show/" + blog.id}>View</Link>
                     <Link to={"/EditBlog/" + blog.id}>Edit</Link>

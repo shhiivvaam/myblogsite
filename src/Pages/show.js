@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import fb from './firebase'
 import { v4 as uuidv4 } from 'uuid';
-import useAuthState from './hooks';
+
+import fb from '../database/firebase'
+import useAuthState from '../hooks/hooks';
 const DB = fb.firestore();
 const Blogslist = DB.collection('blogs');
 
@@ -11,7 +12,6 @@ function LikeBlogButton({ id, likes }) {
 
     const blogRef = DB.collection("blogs").doc(id);
     const { user } = useAuthState(fb.auth());
-
     const handleLikes = () => {
         if (likes?.includes(user.uid)) {
             blogRef.update({
@@ -40,7 +40,6 @@ function LikeBlogButton({ id, likes }) {
 const BlogView = () => {
 
     const { user, initializing } = useAuthState(fb.auth());
-
     const { id } = useParams();
     const [blogs, Setblogs] = useState([]);
     const [comment, setcomment] = useState("");
@@ -81,15 +80,12 @@ const BlogView = () => {
         }
     }
 
-    // const body = blogs.Body;
+    const body = blogs.Body;
     return (
         <div>
             <p>Title: {blogs.Title}</p>
-
-            <p>Body: {blogs.Body}</p>
-
-            {/* below configurations are for the { tinymce -> Editor}   -> to make the fit with the added styling, and do not show the actual HTML tags */}
-            {/* <div dangerouslySetInnerHTML={{ __html: body }}></div> */}
+            {/* <p>Body: {blogs.Body}</p> */}
+            <div dangerouslySetInnerHTML={{ __html: body }}></div>
 
             <div className='mt-20'>
                 {
@@ -143,7 +139,7 @@ const BlogView = () => {
                                     <br />
                                     <p>{item.username}</p>
                                 </div>
-                                {/* adding option to delete the comment -> only for the commenter and the blog creator */}
+                                {/* option to delete the comment -> only for the commenter and the blog creator */}
                                 <div>
                                     {
                                         user.uid === blogs.author || user.uid === item.userid

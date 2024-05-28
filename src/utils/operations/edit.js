@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import fb from './firebase'
+import { useNavigate, useParams } from 'react-router-dom';
+
+import fb from '../../database/firebase'
+import { toast } from 'react-hot-toast';
 const DB = fb.firestore();
 const Blogslist = DB.collection('blogs');
 
 const BlogEdit = () => {
 
     const { id } = useParams();
+    const navigate = useNavigate();
     // const [blogs, Setblogs] = useState([]);
     const [title, SetTitle] = useState("");
     const [body, SetBody] = useState("");
@@ -18,21 +21,26 @@ const BlogEdit = () => {
             SetTitle(data.Title);
             SetBody(data.Body);
         })
-    }, []);
-    // }, [id]);
+    }, [id]);
 
 
     const submit = (e) => {
         e.preventDefault();
+        toast('Please wait!', {
+            icon: '🙏😶‍🌫️',
+        });
         Blogslist.doc(id).update({
             Title: title,
             Body: body,
         })
             .then((docRef) => {
-                alert("Blog Added Successfully.");
+                // alert("Blog Added Successfully.");
+                toast.success("Blog Edited Successfully ✅")
+                navigate('/blogs');
             })
             .catch((error) => {
                 console.log('Error while creating the Blog', error);
+                toast.error("Something went wrong while editing the Blog 🫠🤷")
             });
     }
 
@@ -41,8 +49,6 @@ const BlogEdit = () => {
             {/* <p>Title: {title}</p> */}
             {/* <p>Body: {body}</p> */}
 
-            {/* edit options */}
-            {/* <div> */}
             <form onSubmit={(event) => { submit(event) }}>
                 <input type="text" placeholder="Title" value={title}
                     onChange={(e) => { SetTitle(e.target.value) }} required />
@@ -54,7 +60,6 @@ const BlogEdit = () => {
 
                 <button type="submit">Submit</button>
             </form>
-            {/* </div> */}
         </div>
     );
 }
