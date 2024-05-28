@@ -19,6 +19,7 @@ const BlogEdit = () => {
             SetBody(data.Body);
         })
     }, []);
+    // }, [id]);
 
 
     const submit = (e) => {

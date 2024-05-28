@@ -7,14 +7,18 @@ import CreateBlog from "./create";
 import BlogView from "./show";
 import BlogEdit from "./edit";
 
+// firebase imports -> Pages
+import Signin from "./signup";
+
 function App() {
   return (
     <Router>
       <Routes>
         <Route exact path="/" element={<BlogslistView />} />
-        <Route exact path="/Create" element={<CreateBlog />} />
-        <Route exact path="/show/:id" element={<BlogView />} />
-        <Route exact path="/EditBlog/:id" element={<BlogEdit />} />
+        <Route path="/signin/" element={<Signin />} />
+        <Route path="/Create" element={<CreateBlog />} />
+        <Route path="/show/:id" element={<BlogView />} />
+        <Route path="/EditBlog/:id" element={<BlogEdit />} />
       </Routes>
     </Router>
   );

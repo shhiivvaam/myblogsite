@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 
 // tinymce editor
-import { Editor } from '@tinymce/tinymce-react';
+// import { Editor } from '@tinymce/tinymce-react';
 
 import fb from './firebase'
+import useAuthState from './hooks';
+
 const DB = fb.firestore();
 const Blogslist = DB.collection('blogs');
 
@@ -13,6 +15,8 @@ const storageRef = fb.storage().ref();
 
 
 const CreateBlog = () => {
+
+    const { user, initializing } = useAuthState(fb.auth());
 
     const [title, SetTitle] = useState("");
     const [body, SetBody] = useState("");
@@ -43,6 +47,8 @@ const CreateBlog = () => {
                         Title: title,
                         Body: body,
                         CoverImg: url,
+                        // this can create -> error (fix it)
+                        author: user.uid,
                     })
                         .then((docRef) => {
                             alert("Blog Added Successfully.");
@@ -54,6 +60,8 @@ const CreateBlog = () => {
             }
         )
     }
+
+    if (initializing) return 'loding...';
 
     return (
         <div>

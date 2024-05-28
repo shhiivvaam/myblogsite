@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+// need to apply this markdown later
+// import ReactMarkdown from 'react-markdown';
 
 import fb from './firebase'
 const DB = fb.firestore();
@@ -45,6 +47,10 @@ const BlogslistView = () => {
     // const body = blogs.Body;
     return (
         <div>
+            {/* Sign in With Gogle Link */}
+            <div>
+                <Link to={"/signin"} >Signin</Link>
+            </div>
             <form onSubmit={(e) => { SearchBlog(e) }}>
                 <input onChange={(e) => { SetSearch(e.target.value) }} />
                 <button type='submit'> Search </button>
@@ -53,11 +59,13 @@ const BlogslistView = () => {
                 <div key={blog.id}>
                     <h2>Title : {blog.Title}</h2>
                     <p>Body : {blog.Body}</p>
+                    {/* react markdown step */}
+                    {/* <ReactMarkdown>{post.content}</ReactMarkdown> */}
                     {
                         blog.CoverImg
                             ?
                             <>
-                                <img src={blog.CoverImg} />
+                                <img alt='user blog' src={blog.CoverImg} />
                             </>
                             :
                             null
