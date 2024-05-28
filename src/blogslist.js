@@ -8,6 +8,7 @@ const Blogslist = DB.collection('blogs');
 const BlogslistView = () => {
 
     const [blogs, Setblogs] = useState([]);
+    const [search, SetSearch] = useState("");
 
     useEffect(() => {
         const unsubscribe = Blogslist.limit(100).onSnapshot(querySnapshot => {
@@ -32,12 +33,30 @@ const BlogslistView = () => {
         });
     }
 
+    const SearchBlog = (e) => {
+        e.preventDefault();
+        Setblogs(blogs.filter((blogs) =>
+            blogs.Title.toLowerCase().includes(search.toLowerCase())
+            ||
+            blogs.Body.toLowerCase().includes(search.toLowerCase())
+        ));
+    }
+
+    // const body = blogs.Body;
     return (
         <div>
+            <form onSubmit={(e) => { SearchBlog(e) }}>
+                <input onChange={(e) => { SetSearch(e.target.value) }} />
+                <button type='submit'> Search </button>
+            </form>
             {blogs.map(blog => (
                 <div key={blog.id}>
                     <h2>Title : {blog.Title}</h2>
                     <p>Body : {blog.Body}</p>
+
+                    {/* below configurations are for the { tinymce -> Editor}   -> to make the fit with the added styling, and do not show the actual HTML tags*/}
+                    {/* <div dangerouslySetInnerHTML={{ __html: body }}></div> */}
+
                     <Link to={"/show/" + blog.id}>View</Link>
                     <Link to={"/EditBlog/" + blog.id}>Edit</Link>
                     <button onClick={() => { DeleteBlog(blog.id) }}>delete</button>

@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 
+// tinymce editor
+import { Editor } from '@tinymce/tinymce-react';
+
 import fb from './firebase'
 const DB = fb.firestore();
 const Blogslist = DB.collection('blogs');
+
 
 
 const CreateBlog = () => {
@@ -33,6 +37,14 @@ const CreateBlog = () => {
                 <textarea name="content" type="text" placeholder="write your content here"
                     rows="10" cols="150" onChange={(e) => { SetBody(e.target.value) }} required >
                 </textarea>
+
+                {/* <Editor
+                    textareaName='content'
+                    initialValue='write your content here'
+                    onEditorChange={(newText) => { SetBody(newText) }}
+                    required
+                    apiKey='3lw2lgintfata5t8twmzvfp2fy1ln1odn4ueweqhg5xqhhog'
+                /> */}
 
                 <button type="submit">Submit</button>
             </form>
