@@ -1,40 +1,41 @@
+import React from 'react';
 import fb from "../database/firebase";
 import useAuthState from "../hooks/hooks";
-
 import { toast } from 'react-hot-toast';
+import '../styles/Signin.css';
 
 export default function Signin() {
-
     const { user, initializing } = useAuthState(fb.auth());
+
     const signinwithGoogle = async () => {
         const provider = new fb.auth.GoogleAuthProvider();
         fb.auth().useDeviceLanguage();
         try {
             await fb.auth().signInWithRedirect(provider);
-            toast.success("Logged in Succcessfully 👍");
+            toast.success("Logged in Successfully 👍");
         } catch (error) {
-            console.log('Something occured while SignInWithGoogle : ', error.message);
+            console.log('Something occurred while SignInWithGoogle : ', error.message);
             toast.error("Something went wrong!! 👀")
         }
     };
 
     if (initializing) {
-        return 'loading...'
+        return <div className="loading">Loading...</div>;
     }
+
     return (
-        <div>
+        <div className="signin-container">
             {user
-                ?
-                <div className="mt-20 text-center">
-                    <img src={user.photoURL} alt="user" className="w-12 h-12 mx-auto" />
-                    <p>{user.displayName}</p>
+                ? <div className="user-info">
+                    <img src={user.photoURL} alt="user" className="user-photo" />
+                    <p className="user-name">{user.displayName}</p>
                 </div>
-                :
-                <div className="mt-20 text-center">
+                : <div className="signin-button-container">
+                    Please Sign In First !!
                     <button
-                        className="border-2 border-black"
+                        className="signin-button"
                         onClick={signinwithGoogle}>
-                        Sign In With GOOGLE
+                        Sign In With Google
                     </button>
                 </div>
             }
