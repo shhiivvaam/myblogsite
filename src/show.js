@@ -52,10 +52,16 @@ const BlogView = () => {
         const commentdata = snapshot.data().comments;
         Setblogs({ ...data, id: id, });
         setCommentList(commentdata);
-    })
+    });
 
     if (initializing) {
         return 'loading...';
+    }
+
+    const handlecommentDelete = (comment) => {
+        Blogslist.doc(id).update({
+            comments: fb.firestore.FieldValue.arrayRemove(comment)
+        })
     }
 
     const handleComment = (e) => {
@@ -136,6 +142,20 @@ const BlogView = () => {
                                     <p>{item.comment}</p>
                                     <br />
                                     <p>{item.username}</p>
+                                </div>
+                                {/* adding option to delete the comment -> only for the commenter and the blog creator */}
+                                <div>
+                                    {
+                                        user.uid === blogs.author || user.uid === item.userid
+                                            ?
+                                            <button
+                                                className='text-red-500'
+                                                onClick={() => handlecommentDelete(item)}>
+                                                Delete
+                                            </button>
+                                            :
+                                            null
+                                    }
                                 </div>
                             </div>
                         ))
