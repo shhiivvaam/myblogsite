@@ -53,6 +53,15 @@ const BlogslistView = () => {
                 <div key={blog.id}>
                     <h2>Title : {blog.Title}</h2>
                     <p>Body : {blog.Body}</p>
+                    {
+                        blog.CoverImg
+                            ?
+                            <>
+                                <img src={blog.CoverImg} />
+                            </>
+                            :
+                            null
+                    }
 
                     {/* below configurations are for the { tinymce -> Editor}   -> to make the fit with the added styling, and do not show the actual HTML tags*/}
                     {/* <div dangerouslySetInnerHTML={{ __html: body }}></div> */}
@@ -61,8 +70,9 @@ const BlogslistView = () => {
                     <Link to={"/EditBlog/" + blog.id}>Edit</Link>
                     <button onClick={() => { DeleteBlog(blog.id) }}>delete</button>
                 </div>
-            ))}
-        </div>
+            ))
+            }
+        </div >
     );
 }
 

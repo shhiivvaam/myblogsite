@@ -7,25 +7,52 @@ import fb from './firebase'
 const DB = fb.firestore();
 const Blogslist = DB.collection('blogs');
 
+// firebase storage
+const storageRef = fb.storage().ref();
+
 
 
 const CreateBlog = () => {
 
     const [title, SetTitle] = useState("");
     const [body, SetBody] = useState("");
+    const [cover, SetCover] = useState(null);
+
+    const handleCoverImgChange = (e) => {
+        if (e.target.files[0]) {
+            SetCover(e.target.files[0]);
+        }
+    }
 
     const submit = (e) => {
         e.preventDefault();
-        Blogslist.add({
-            Title: title,
-            Body: body,
-        })
-            .then((docRef) => {
-                alert("Blog Added Successfully.");
-            })
-            .catch((error) => {
-                console.log('Error while creating the Blog', error);
-            });
+
+        const uploadtask = storageRef.child('images/' + cover.name).put(cover);
+        uploadtask.on(
+            'state_changed',
+            snapshot => { },
+            error => {
+                console.log(error);
+            },
+            () => {
+                // uploadtask.snapshot.ref.getDownloadURL()
+                storageRef.child('images/' + cover.name).getDownloadURL().then(url => {
+                    console.log("image url : ", url);
+
+                    Blogslist.add({
+                        Title: title,
+                        Body: body,
+                        CoverImg: url,
+                    })
+                        .then((docRef) => {
+                            alert("Blog Added Successfully.");
+                        })
+                        .catch((error) => {
+                            console.log('Error while creating the Blog', error);
+                        });
+                })
+            }
+        )
     }
 
     return (
@@ -33,6 +60,9 @@ const CreateBlog = () => {
             <form onSubmit={(event) => { submit(event) }}>
                 <input type="text" placeholder="Title"
                     onChange={(e) => { SetTitle(e.target.value) }} required />
+
+                {/* input for image -> cover */}
+                <input type='file' name='coverimg' accept='image/*' onChange={(e) => handleCoverImgChange(e)} />
 
                 <textarea name="content" type="text" placeholder="write your content here"
                     rows="10" cols="150" onChange={(e) => { SetBody(e.target.value) }} required >
