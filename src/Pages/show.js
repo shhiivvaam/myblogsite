@@ -14,6 +14,7 @@ const Blogslist = DB.collection('blogs');
 function LikeBlogButton({ id, likes }) {
     const blogRef = DB.collection("blogs").doc(id);
     const { user } = useAuthState(fb.auth());
+
     const handleLikes = () => {
         if (likes?.includes(user.uid)) {
             blogRef.update({
@@ -24,7 +25,7 @@ function LikeBlogButton({ id, likes }) {
                 likes: fb.firestore.FieldValue.arrayUnion(user.uid)
             });
         }
-    }
+    };
 
     return (
         <div className="like-button-container">
@@ -39,24 +40,25 @@ function LikeBlogButton({ id, likes }) {
 const BlogView = () => {
     const { user, initializing } = useAuthState(fb.auth());
     const { id } = useParams();
-    const [blogs, Setblogs] = useState({});
-    const [comment, setcomment] = useState("");
+    const [blogs, setBlogs] = useState({});
+    const [comment, setComment] = useState("");
     const [commentList, setCommentList] = useState([]);
 
     useEffect(() => {
-        Blogslist.doc(id).get().then((snapshot) => {
+        const unsubscribe = Blogslist.doc(id).onSnapshot((snapshot) => {
             const data = snapshot.data();
-            Setblogs({ ...data, id: id });
+            setBlogs({ ...data, id: id });
             setCommentList(data.comments);
         });
+
+        return () => unsubscribe();
     }, [id]);
 
     if (initializing) {
-        // return 'loading...';
         return <Loader />
     }
 
-    const handlecommentDelete = (comment) => {
+    const handleCommentDelete = (comment) => {
         toast('Please wait!', { icon: '🙏😶‍🌫️' });
         try {
             Blogslist.doc(id).update({
@@ -64,13 +66,13 @@ const BlogView = () => {
             });
             toast.success("Comment Removed 👍");
         } catch (error) {
-            console.log("Something went wrong, while deleting comment", error);
+            console.log("Something went wrong while deleting comment", error);
             toast.error("Something went wrong!! 👀");
         }
-    }
+    };
 
-    const handleComment = (e) => {
-        if (e.key === "Enter") {
+    const submitComment = () => {
+        if (comment.trim()) {
             Blogslist.doc(id).update({
                 comments: fb.firestore.FieldValue.arrayUnion({
                     userid: user.uid,
@@ -81,10 +83,20 @@ const BlogView = () => {
                     commentId: uuidv4(),
                 })
             }).then(() => {
-                setcomment("");
+                setComment("");
+                toast.success("Comment Posted 😂🫡");
+            }).catch(error => {
+                console.log("Something went wrong while adding comment", error);
+                toast.error("Something went wrong!! 👀");
             });
         }
-    }
+    };
+
+    const handleCommentKeyUp = (e) => {
+        if (e.key === "Enter") {
+            submitComment();
+        }
+    };
 
     return (
         <div className="blog-view-container">
@@ -103,9 +115,12 @@ const BlogView = () => {
                             className="comment-box"
                             placeholder="Add Comment"
                             value={comment}
-                            onChange={(e) => setcomment(e.target.value)}
-                            onKeyUp={(e) => handleComment(e)}
+                            onChange={(e) => setComment(e.target.value)}
+                            onKeyUp={handleCommentKeyUp}
                         />
+                        <button className="comment-submit-button" onClick={submitComment}>
+                            Submit
+                        </button>
                     </div>
                 ) : null}
                 <div className="comments-list">
@@ -120,7 +135,7 @@ const BlogView = () => {
                                 {(user.uid === blogs.author || user.uid === item.userid) && (
                                     <button
                                         className="delete-button"
-                                        onClick={() => handlecommentDelete(item)}
+                                        onClick={() => handleCommentDelete(item)}
                                     >
                                         Delete
                                     </button>
