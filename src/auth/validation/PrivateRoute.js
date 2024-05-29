@@ -1,9 +1,9 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
-import fb from '../../database/firebase';
+import fb from '../../config/firebase';
 import useAuthState from '../../hooks/hooks';
 import { toast } from "react-hot-toast";
-import Loader from "../../utils/loader/Loader";
+import Loader from "../../components/loader/Loader";
 
 export default function PrivateRoute({ children }) {
     const { user, initializing } = useAuthState(fb.auth());

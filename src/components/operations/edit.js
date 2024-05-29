@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { Editor } from '@tinymce/tinymce-react';
 
-import fb from '../../database/firebase';
+import fb from '../../config/firebase';
 import '../../styles/BlogEdit.css';
 
 const DB = fb.firestore();

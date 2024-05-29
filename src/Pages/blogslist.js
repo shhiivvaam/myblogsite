@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
-import fb from '../database/firebase';
+import fb from '../config/firebase';
 import '../styles/BlogListView.css';
 import useAuthState from '../hooks/hooks';
 

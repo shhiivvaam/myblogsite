@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Editor } from '@tinymce/tinymce-react';
 import { toast } from 'react-hot-toast';
 
-import fb from '../../database/firebase';
+import fb from '../../config/firebase';
 import useAuthState from '../../hooks/hooks';
 import '../../styles/CreateBlog.css';
 import Loader from '../loader/Loader';

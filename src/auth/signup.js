@@ -1,19 +1,22 @@
 import React from 'react';
-import fb from "../database/firebase";
+import fb from "../config/firebase";
 import useAuthState from "../hooks/hooks";
 import { toast } from 'react-hot-toast';
 import '../styles/Signin.css';
 import logo from '../assets/googleImage.png';
-import Loader from '../utils/loader/Loader';
+import Loader from '../components/loader/Loader';
+import { useNavigate } from 'react-router-dom';
 
 export default function Signin() {
     const { user, initializing } = useAuthState(fb.auth());
+    const navigate = useNavigate();
 
     const signinwithGoogle = async () => {
         const provider = new fb.auth.GoogleAuthProvider();
         fb.auth().useDeviceLanguage();
         try {
             await fb.auth().signInWithRedirect(provider);
+            navigate('/blogs');
             toast.success("Logged in Successfully 👍");
         } catch (error) {
             console.log('Something occurred while SignInWithGoogle : ', error.message);

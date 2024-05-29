@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
-import fb from '../database/firebase';
+import fb from '../config/firebase';
 import useAuthState from '../hooks/hooks';
 import '../styles/BlogView.css';
-import Loader from '../utils/loader/Loader';
+import Loader from '../components/loader/Loader';
+import toast from 'react-hot-toast';
 
 const DB = fb.firestore();
 const Blogslist = DB.collection('blogs');
@@ -56,9 +57,16 @@ const BlogView = () => {
     }
 
     const handlecommentDelete = (comment) => {
-        Blogslist.doc(id).update({
-            comments: fb.firestore.FieldValue.arrayRemove(comment)
-        });
+        toast('Please wait!', { icon: '🙏😶‍🌫️' });
+        try {
+            Blogslist.doc(id).update({
+                comments: fb.firestore.FieldValue.arrayRemove(comment)
+            });
+            toast.success("Comment Removed 👍");
+        } catch (error) {
+            console.log("Something went wrong, while deleting comment", error);
+            toast.error("Something went wrong!! 👀");
+        }
     }
 
     const handleComment = (e) => {
