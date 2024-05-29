@@ -6,10 +6,8 @@
 
 ### OBJECTIVE :
 
-    This project is a Personal Blog Application developed using React.
-    The objective is to evaluate proficiency in creating React applications
-    with client-side routing, managing application state, and handling dynamic data.
-    The application allows users to read, post, and delete blog posts.
+    This project is a Blog Application developed using React. The objective is to create a React application with 	       client-side routing,managing application state, and handling dynamic data.
+    The application allows un-authorized users to read blogs and authorized users to read, update, like, comment and delete blogs.
 
 ### FEATURES LIST :
 
@@ -33,7 +31,7 @@ git clone https://github.com/shhiivvaam/myblogsite.git
 
 cd myblogsite
 npm install
-npm start / npm run start
+npm start
 ```
 
 Thank you for visiting!
