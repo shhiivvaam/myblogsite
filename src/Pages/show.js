@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import fb from '../database/firebase';
 import useAuthState from '../hooks/hooks';
 import '../styles/BlogView.css';
+import Loader from '../utils/loader/Loader';
 
 const DB = fb.firestore();
 const Blogslist = DB.collection('blogs');
@@ -50,7 +51,8 @@ const BlogView = () => {
     }, [id]);
 
     if (initializing) {
-        return 'loading...';
+        // return 'loading...';
+        return <Loader />
     }
 
     const handlecommentDelete = (comment) => {

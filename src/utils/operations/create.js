@@ -7,6 +7,7 @@ import { toast } from 'react-hot-toast';
 import fb from '../../database/firebase';
 import useAuthState from '../../hooks/hooks';
 import '../../styles/CreateBlog.css';
+import Loader from '../loader/Loader';
 
 const DB = fb.firestore();
 const storageRef = fb.storage().ref();
@@ -56,7 +57,10 @@ const CreateBlog = () => {
         );
     };
 
-    if (initializing) return 'loading...';
+    if (initializing) {
+        // return 'loading...';
+        return <Loader />
+    }
 
     return (
         <div className="create-blog-container">

@@ -3,6 +3,8 @@ import fb from "../database/firebase";
 import useAuthState from "../hooks/hooks";
 import { toast } from 'react-hot-toast';
 import '../styles/Signin.css';
+import logo from '../assets/googleImage.png';
+import Loader from '../utils/loader/Loader';
 
 export default function Signin() {
     const { user, initializing } = useAuthState(fb.auth());
@@ -19,8 +21,19 @@ export default function Signin() {
         }
     };
 
+    const logout = async () => {
+        try {
+            await fb.auth().signOut();
+            toast.success("Logged out Successfully 👍");
+        } catch (error) {
+            toast.error("Something went wrong!! 👀")
+            console.log('Something occurred while logging out: ', error.message);
+        }
+    };
+
     if (initializing) {
-        return <div className="loading">Loading...</div>;
+        // return <div className="loading">Loading...</div>
+        return <Loader />
     }
 
     return (
@@ -29,9 +42,15 @@ export default function Signin() {
                 ? <div className="user-info">
                     <img src={user.photoURL} alt="user" className="user-photo" />
                     <p className="user-name">{user.displayName}</p>
+                    <button
+                        className="logout-button"
+                        onClick={logout}>
+                        Logout
+                    </button>
                 </div>
                 : <div className="signin-button-container">
-                    Please Sign In First !!
+                    <img src={logo} alt="logo" className="logo" />
+                    <p>Please Sign In First !!</p>
                     <button
                         className="signin-button"
                         onClick={signinwithGoogle}>
