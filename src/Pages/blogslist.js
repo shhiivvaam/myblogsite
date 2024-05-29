@@ -67,19 +67,15 @@ const BlogslistView = () => {
                                     <img className="blog-image" alt="user blog" src={blog.CoverImg} />
                                 </div>
                             )}
-
                             <div dangerouslySetInnerHTML={{ __html: blog.Body }}></div>
                             <div className="actions">
                                 <Link to={"/show/" + blog.id}>View</Link>
-
                                 {(user.uid === blog.author) && (
-                                    <Link to={"/EditBlog/" + blog.id}>Edit</Link>
+                                    <>
+                                        <Link to={"/EditBlog/" + blog.id}>Edit</Link>
+                                        <button onClick={() => { DeleteBlog(blog.id) }}>Delete</button>
+                                    </>
                                 )}
-                                {/* <Link to={"/EditBlog/" + blog.id}>Edit</Link> */}
-                                {(user.uid === blog.author) && (
-                                    <button onClick={() => { DeleteBlog(blog.id) }}>Delete</button>
-                                )}
-                                {/* <button onClick={() => { DeleteBlog(blog.id) }}>Delete</button> */}
                             </div>
                         </div>
                     ))}

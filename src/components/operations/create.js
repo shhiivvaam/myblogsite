@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Editor } from '@tinymce/tinymce-react';
 import { toast } from 'react-hot-toast';
-
 import fb from '../../config/firebase';
 import useAuthState from '../../hooks/hooks';
 import '../../styles/CreateBlog.css';
@@ -18,6 +17,13 @@ const CreateBlog = () => {
     const [title, setTitle] = useState("");
     const [body, setBody] = useState("");
     const [cover, setCover] = useState(null);
+    const formRef = useRef(null);
+
+    useEffect(() => {
+        if (formRef.current) {
+            formRef.current.classList.add('fade-in');
+        }
+    }, []);
 
     const handleCoverImgChange = (e) => {
         if (e.target.files[0]) {
@@ -28,6 +34,11 @@ const CreateBlog = () => {
     const submit = (e) => {
         e.preventDefault();
         toast('Please wait!', { icon: '🙏😶‍🌫️' });
+        
+        if (formRef.current) {
+            formRef.current.classList.add('submitting');
+        }
+
         if (cover !== null) {
             const uploadTask = storageRef.child('images/' + cover.name).put(cover);
             uploadTask.on(
@@ -69,17 +80,16 @@ const CreateBlog = () => {
                     console.log('Error while creating the Blog', error);
                     toast.error("Error while creating the Blog ❌");
                 });
-        };
+        }
     }
 
     if (initializing) {
-        // return 'loading...';
-        return <Loader />
+        return <Loader />;
     }
 
     return (
         <div className="create-blog-container">
-            <form onSubmit={submit} className="create-blog-form">
+            <form ref={formRef} onSubmit={submit} className="create-blog-form">
                 <input
                     type="text"
                     placeholder="Title"
@@ -98,7 +108,6 @@ const CreateBlog = () => {
                     textareaName='content'
                     initialValue='write your content here'
                     onEditorChange={setBody}
-                    // apiKey={process.env.TINYMCE_EDITOR_API_KEY}
                     apiKey='3lw2lgintfata5t8twmzvfp2fy1ln1odn4ueweqhg5xqhhog'
                     className="editor"
                 />

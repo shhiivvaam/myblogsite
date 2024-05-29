@@ -10,7 +10,6 @@ import toast from 'react-hot-toast';
 const DB = fb.firestore();
 const Blogslist = DB.collection('blogs');
 
-// Blog like function
 function LikeBlogButton({ id, likes }) {
     const blogRef = DB.collection("blogs").doc(id);
     const { user } = useAuthState(fb.auth());

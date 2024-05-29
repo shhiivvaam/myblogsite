@@ -1,53 +1,103 @@
+/* CreateBlog.css */
 .create-blog-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    background-color: #f5f5f5;
     padding: 20px;
+    background-color: #f5f5f5;
+    min-height: 100vh;
 }
 
 .create-blog-form {
-    background: white;
-    padding: 2rem;
+    background: #fff;
+    padding: 30px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     max-width: 600px;
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 20px;
 }
 
 .input-title,
 .input-file,
-.submit-button {
-    padding: 0.5rem;
-    border: 1px solid #ccc;
+.editor {
+    font-size: 16px;
+    padding: 12px;
+    border: 1px solid #ddd;
     border-radius: 4px;
-    font-size: 1rem;
     width: 100%;
 }
 
 .input-title:focus,
-.input-file:focus {
+.input-file:focus,
+.editor:focus {
     outline: none;
-    border-color: #007BFF;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
 
 .submit-button {
-    background-color: #007BFF;
-    color: white;
+    background-color: #007bff;
+    color: #fff;
     border: none;
+    padding: 12px;
+    border-radius: 4px;
+    font-size: 16px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s;
 }
 
 .submit-button:hover {
     background-color: #0056b3;
 }
 
-.editor {
-    border: 1px solid #ccc;
-    border-radius: 4px;
+@media (max-width: 768px) {
+    .create-blog-form {
+        padding: 20px;
+    }
+
+    .input-title,
+    .input-file,
+    .editor {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .submit-button {
+        padding: 10px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .create-blog-form {
+        padding: 15px;
+    }
+
+    .input-title,
+    .input-file,
+    .editor {
+        font-size: 12px;
+        padding: 8px;
+    }
+
+    .submit-button {
+        padding: 8px;
+        font-size: 12px;
+    }
+}
+
+.fade-in {
+    opacity: 0;
+    transition: opacity 0.5s ease-in;
+}
+
+.submitting {
+    opacity: 0.5;
+}
+
+.create-blog-form.fade-in {
+    opacity: 1;
 }
