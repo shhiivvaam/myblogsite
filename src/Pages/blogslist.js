@@ -62,8 +62,13 @@ const BlogslistView = () => {
                     blogs.map(blog => (
                         <div className="blog-post" key={blog.id}>
                             <h2>{blog.Title}</h2>
+                            {blog.CoverImg && (
+                                <div className="image-container">
+                                    <img className="blog-image" alt="user blog" src={blog.CoverImg} />
+                                </div>
+                            )}
+
                             <div dangerouslySetInnerHTML={{ __html: blog.Body }}></div>
-                            {blog.CoverImg && <img className="blog-image" alt='user blog' src={blog.CoverImg} />}
                             <div className="actions">
                                 <Link to={"/show/" + blog.id}>View</Link>
 

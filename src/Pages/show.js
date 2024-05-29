@@ -100,7 +100,8 @@ const BlogView = () => {
 
     return (
         <div className="blog-view-container">
-            <h1 className="blog-title">Title: {blogs.Title}</h1>
+            <h1 className="blog-title">{blogs.Title}</h1>
+            {blogs.CoverImg && <img className="blog-image" alt='user blog' src={blogs.CoverImg} />}
             <div className="blog-body" dangerouslySetInnerHTML={{ __html: blogs.Body }}></div>
             <div className="like-section">
                 {user ? <LikeBlogButton id={blogs.id} likes={blogs.likes} /> : null}

@@ -4,16 +4,21 @@ import { toast } from 'react-hot-toast';
 import { Editor } from '@tinymce/tinymce-react';
 
 import fb from '../../config/firebase';
+import useAuthState from '../../hooks/hooks';
 import '../../styles/BlogEdit.css';
+import Loader from '../loader/Loader';
 
 const DB = fb.firestore();
+const storageRef = fb.storage().ref();
 const Blogslist = DB.collection('blogs');
 
 const BlogEdit = () => {
     const { id } = useParams();
+    const { user, initializing } = useAuthState(fb.auth());
     const navigate = useNavigate();
     const [title, setTitle] = useState("");
     const [body, setBody] = useState("");
+    const [cover, setCover] = useState(null);
 
     useEffect(() => {
         Blogslist.doc(id).get().then(snapshot => {
@@ -23,21 +28,78 @@ const BlogEdit = () => {
         });
     }, [id]);
 
+    // const submit = (e) => {
+    //     e.preventDefault();
+    //     toast('Please wait!', { icon: '🙏😶‍🌫️' });
+    //     Blogslist.doc(id).update({
+    //         Title: title,
+    //         Body: body,
+    //     })
+    //         .then(() => {
+    //             toast.success("Blog Edited Successfully ✅");
+    //             navigate('/blogs');
+    //         })
+    //         .catch(error => {
+    //             console.log('Error while editing the Blog', error);
+    //             toast.error("Something went wrong while editing the Blog 🫠🤷");
+    //         });
+    // };
     const submit = (e) => {
         e.preventDefault();
         toast('Please wait!', { icon: '🙏😶‍🌫️' });
-        Blogslist.doc(id).update({
-            Title: title,
-            Body: body,
-        })
-            .then(() => {
-                toast.success("Blog Edited Successfully ✅");
-                navigate('/blogs');
+        if (cover !== null) {
+            const uploadTask = storageRef.child('images/' + cover.name).put(cover);
+            uploadTask.on(
+                'state_changed',
+                snapshot => { },
+                error => {
+                    console.log(error);
+                },
+                () => {
+                    storageRef.child('images/' + cover.name).getDownloadURL().then(url => {
+                        Blogslist.add({
+                            Title: title,
+                            Body: body,
+                            CoverImg: url,
+                            author: user.uid,
+                        })
+                            .then(() => {
+                                toast.success("Blog Added Successfully 😎✅");
+                                navigate("/blogs");
+                            })
+                            .catch(error => {
+                                console.log('Error while creating the Blog', error);
+                                toast.error("Error while creating the Blog ❌");
+                            });
+                    });
+                }
+            );
+        } else {
+            Blogslist.add({
+                Title: title,
+                Body: body,
+                author: user.uid,
             })
-            .catch(error => {
-                console.log('Error while editing the Blog', error);
-                toast.error("Something went wrong while editing the Blog 🫠🤷");
-            });
+                .then(() => {
+                    toast.success("Blog Added Successfully 😎✅");
+                    navigate("/blogs");
+                })
+                .catch(error => {
+                    console.log('Error while creating the Blog', error);
+                    toast.error("Error while creating the Blog ❌");
+                });
+        };
+    }
+
+    if (initializing) {
+        // return 'loading...';
+        return <Loader />
+    }
+
+    const handleCoverImgChange = (e) => {
+        if (e.target.files[0]) {
+            setCover(e.target.files[0]);
+        }
     };
 
     return (
@@ -50,6 +112,13 @@ const BlogEdit = () => {
                     onChange={(e) => setTitle(e.target.value)}
                     className="input-title"
                 // required
+                />
+                <input
+                    type='file'
+                    name='coverimg'
+                    accept='image/*'
+                    onChange={handleCoverImgChange}
+                    className="input-file"
                 />
                 <textarea
                     name="content"
