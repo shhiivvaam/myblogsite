@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Editor } from '@tinymce/tinymce-react';
@@ -29,33 +28,49 @@ const CreateBlog = () => {
     const submit = (e) => {
         e.preventDefault();
         toast('Please wait!', { icon: '🙏😶‍🌫️' });
-        const uploadTask = storageRef.child('images/' + cover.name).put(cover);
-        uploadTask.on(
-            'state_changed',
-            snapshot => { },
-            error => {
-                console.log(error);
-            },
-            () => {
-                storageRef.child('images/' + cover.name).getDownloadURL().then(url => {
-                    Blogslist.add({
-                        Title: title,
-                        Body: body,
-                        CoverImg: url,
-                        author: user.uid,
-                    })
-                        .then(() => {
-                            toast.success("Blog Added Successfully 😎✅");
-                            navigate("/blogs");
+        if (cover !== null) {
+            const uploadTask = storageRef.child('images/' + cover.name).put(cover);
+            uploadTask.on(
+                'state_changed',
+                snapshot => { },
+                error => {
+                    console.log(error);
+                },
+                () => {
+                    storageRef.child('images/' + cover.name).getDownloadURL().then(url => {
+                        Blogslist.add({
+                            Title: title,
+                            Body: body,
+                            CoverImg: url,
+                            author: user.uid,
                         })
-                        .catch(error => {
-                            console.log('Error while creating the Blog', error);
-                            toast.error("Error while creating the Blog ❌");
-                        });
+                            .then(() => {
+                                toast.success("Blog Added Successfully 😎✅");
+                                navigate("/blogs");
+                            })
+                            .catch(error => {
+                                console.log('Error while creating the Blog', error);
+                                toast.error("Error while creating the Blog ❌");
+                            });
+                    });
+                }
+            );
+        } else {
+            Blogslist.add({
+                Title: title,
+                Body: body,
+                author: user.uid,
+            })
+                .then(() => {
+                    toast.success("Blog Added Successfully 😎✅");
+                    navigate("/blogs");
+                })
+                .catch(error => {
+                    console.log('Error while creating the Blog', error);
+                    toast.error("Error while creating the Blog ❌");
                 });
-            }
-        );
-    };
+        };
+    }
 
     if (initializing) {
         // return 'loading...';

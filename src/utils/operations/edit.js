@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
+import { Editor } from '@tinymce/tinymce-react';
 
 import fb from '../../database/firebase';
 import '../../styles/BlogEdit.css';
@@ -48,18 +49,34 @@ const BlogEdit = () => {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     className="input-title"
-                    required
+                // required
                 />
                 <textarea
                     name="content"
                     type="text"
-                    placeholder="write your content here"
+                    placeholder="..loading"
                     value={body}
                     rows="10"
                     cols="150"
                     onChange={(e) => setBody(e.target.value)}
                     className="input-body"
-                    required
+                // required
+                />
+                <h2>Preview</h2>
+                <Editor
+                    textareaName='content'
+                    initialValue={body}
+                    apiKey='3lw2lgintfata5t8twmzvfp2fy1ln1odn4ueweqhg5xqhhog'
+                    init={{
+                        menubar: false,
+                        toolbar: false,
+                        readonly: true,
+                        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+                        // Optional: Disable the resizing handle at the bottom right corner
+                        resize: false,
+                        height: 300  // Adjust height as needed
+                    }}
+                    className="editor"
                 />
                 <button type="submit" className="submit-button">Submit</button>
             </form>

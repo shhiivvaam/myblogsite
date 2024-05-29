@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import fb from '../database/firebase';
 import '../styles/BlogListView.css';
+import useAuthState from '../hooks/hooks';
 
 const DB = fb.firestore();
 const Blogslist = DB.collection('blogs');
@@ -10,6 +11,7 @@ const Blogslist = DB.collection('blogs');
 const BlogslistView = () => {
     const [blogs, Setblogs] = useState([]);
     const [search, SetSearch] = useState("");
+    const { user } = useAuthState(fb.auth());
 
     useEffect(() => {
         const unsubscribe = Blogslist.limit(100).onSnapshot(querySnapshot => {
@@ -60,8 +62,15 @@ const BlogslistView = () => {
                         {blog.CoverImg && <img className="blog-image" alt='user blog' src={blog.CoverImg} />}
                         <div className="actions">
                             <Link to={"/show/" + blog.id}>View</Link>
-                            <Link to={"/EditBlog/" + blog.id}>Edit</Link>
-                            <button onClick={() => { DeleteBlog(blog.id) }}>Delete</button>
+
+                            {(user.uid === blog.author) && (
+                                <Link to={"/EditBlog/" + blog.id}>Edit</Link>
+                            )}
+                            {/* <Link to={"/EditBlog/" + blog.id}>Edit</Link> */}
+                            {(user.uid === blog.author) && (
+                                <button onClick={() => { DeleteBlog(blog.id) }}>Delete</button>
+                            )}
+                            {/* <button onClick={() => { DeleteBlog(blog.id) }}>Delete</button> */}
                         </div>
                     </div>
                 ))}
